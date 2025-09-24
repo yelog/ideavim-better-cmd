@@ -2,9 +2,10 @@
 <idea-plugin>
     <id>com.github.yelog.ideavimbettercmd</id>
     <name>ideavim-better-cmd</name>
-    <vendor>yelog</vendor>
+    <vendor email="yelogeek@gmail.com" url="https://yelog.org">yelog</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends optional="true" config-file="ideavim.xml">IdeaVim</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 
