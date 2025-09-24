@@ -4,6 +4,11 @@ A JetBrains (IntelliJ Platform) plugin that replaces (or augments) the native Id
 
 > Status: Experimental / WIP. Expect breaking changes.
 
+<!-- Plugin description -->
+IdeaVim Better Cmd 是一个实验性的 JetBrains 平台插件，使用轻量浮动弹窗替换 / 增强 IdeaVim 原生的 Ex (`:`) 命令与搜索 (`/`) 输入行。它在 Vim Normal 模式下拦截 `:` 与 `/`，弹出自定义输入框，并通过反射调用 IdeaVim 内部执行命令或搜索，同时多次尝试抑制底部原生面板出现，旨在提供更快、更可扩展的命令体验。  
+English: IdeaVim Better Cmd replaces (or augments) the native IdeaVim Ex and search prompts with a lightweight popup. It intercepts `:` and `/`, invokes IdeaVim internals reflectively, and repeatedly suppresses the original panel to deliver a faster, extensible command interface.
+<!-- Plugin description end -->
+
 ## Features (Current)
 - Intercepts `:` and `/` in (mostly) Vim *Normal* mode and shows a floating popup instead of the bottom command/search panel.
 - Provides a minimal UI with a text field (command or search mode).

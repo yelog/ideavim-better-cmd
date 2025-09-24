@@ -15,11 +15,15 @@ import javax.swing.JLabel
 import javax.swing.BorderFactory
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
+import javax.swing.Timer
+import javax.swing.event.DocumentListener
+import javax.swing.event.DocumentEvent
 
 class BetterCmdLinePopup(
     private val project: Project,
     private val prefix: Char,
     private val onSubmit: (String) -> Unit,
+    private val onChange: ((String) -> Unit)? = null,
 ) {
     private var popup: JBPopup? = null
 
@@ -31,20 +35,44 @@ class BetterCmdLinePopup(
         field.columns = 50
         field.border = BorderFactory.createEmptyBorder(4, 4, 4, 4)
 
+        var suppressorTimer: Timer? = null
+
         field.addKeyListener(object : KeyAdapter() {
             override fun keyPressed(e: KeyEvent) {
                 when (e.keyCode) {
                     KeyEvent.VK_ENTER -> {
                         val text = field.text.trim()
                         popup?.cancel()
-                        onSubmit(text)
+                        suppressorTimer?.stop()
+                        ApplicationManager.getApplication().invokeLater {
+                            onSubmit(text)
+                            // 回车后直接把焦点放回编辑器
+                            val editor = FileEditorManager.getInstance(project).selectedTextEditor
+                            editor?.contentComponent?.requestFocusInWindow()
+                        }
                     }
                     KeyEvent.VK_ESCAPE -> {
                         popup?.cancel()
+                        suppressorTimer?.stop()
+                        ApplicationManager.getApplication().invokeLater {
+                            val editor = FileEditorManager.getInstance(project).selectedTextEditor
+                            editor?.contentComponent?.requestFocusInWindow()
+                        }
                     }
                 }
             }
         })
+
+        if (prefix == '/') {
+            field.document.addDocumentListener(object : DocumentListener {
+                private fun changed() {
+                    onChange?.invoke(field.text)
+                }
+                override fun insertUpdate(e: DocumentEvent) = changed()
+                override fun removeUpdate(e: DocumentEvent) = changed()
+                override fun changedUpdate(e: DocumentEvent) = changed()
+            })
+        }
 
         panel.add(label)
         panel.add(field)
@@ -79,6 +107,11 @@ class BetterCmdLinePopup(
         } else {
             popup?.showCenteredInCurrentWindow(project)
         }
+
+        // 周期性关闭原生 IdeaVim 面板，防止其在第二次及之后再次出现
+        suppressorTimer = Timer(120) {
+            ExEntryPanelSuppressor.closeOnce()
+        }.also { it.start() }
 
         ApplicationManager.getApplication().invokeLater {
             field.requestFocusInWindow()
