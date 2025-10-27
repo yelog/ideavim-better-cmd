@@ -462,6 +462,11 @@ class CmdlineOverlayPanel(
             label.text = NO_RESULTS_TEXT
             return
         }
+        if (isSearchLineLimitExceeded()) {
+            label.foreground = SEARCH_RESULT_NEUTRAL_COLOR
+            label.text = SEARCH_RESULT_SKIPPED_TEXT
+            return
+        }
         val stats = computeSearchResultStats(query)
         if (stats == null || stats.total == 0) {
             label.foreground = SEARCH_RESULT_EMPTY_COLOR
@@ -474,6 +479,9 @@ class CmdlineOverlayPanel(
 
     private fun computeSearchResultStats(query: String): SearchResultStats? {
         if (!isSearchMode()) {
+            return null
+        }
+        if (isSearchLineLimitExceeded()) {
             return null
         }
         val normalized = normalizeSearchPattern(query)
@@ -498,6 +506,11 @@ class CmdlineOverlayPanel(
         }
         val currentIndex = matches.indexOf(currentOffset).takeIf { it >= 0 } ?: 0
         return SearchResultStats(currentIndex + 1, matches.size)
+    }
+
+    private fun isSearchLineLimitExceeded(): Boolean {
+        val lineLimit = CmdlineOverlaySettings.searchCompletionLineLimit()
+        return lineLimit > 0 && editor.document.lineCount > lineLimit
     }
 
     private fun normalizeSearchPattern(raw: String): NormalizedPattern {
@@ -605,6 +618,10 @@ class CmdlineOverlayPanel(
             return
         }
         searchCommitted = false
+        if (isSearchLineLimitExceeded()) {
+            searchCancelled = true
+            return
+        }
         if (text.isEmpty()) {
             searchCancelled = true
             onSearchPreviewCancel?.invoke(searchInitialCaretOffset)
@@ -1555,6 +1572,7 @@ private val SEARCH_RESULT_NEUTRAL_COLOR = JBColor.namedColor("Label.infoForegrou
 private val SEARCH_RESULT_ACTIVE_COLOR = JBColor.namedColor("Link.activeForeground", JBColor(0x0A84FF, 0x4C8DFF))
 private val SEARCH_RESULT_EMPTY_COLOR = JBColor.namedColor("Label.errorForeground", JBColor(0xE5484D, 0xFF6A6A))
 private const val NO_RESULTS_TEXT = "0 results"
+private const val SEARCH_RESULT_SKIPPED_TEXT = "..."
 
 private val searchMatchComparator = compareByDescending<SearchMatchCompletion> { it.maxConsecutive }
     .thenBy { it.firstIndex }
