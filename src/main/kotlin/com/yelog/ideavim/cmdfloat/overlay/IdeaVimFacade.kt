@@ -426,20 +426,23 @@ object IdeaVimFacade {
     }
 
     private fun iteratorSequence(iterator: Iterator<*>): Sequence<Any?> {
-        return sequence {
-            while (iterator.hasNext()) {
-                yield(iterator.next())
-            }
+        val elements = mutableListOf<Any?>()
+        while (iterator.hasNext()) {
+            elements.add(iterator.next())
         }
+        return elements.asSequence()
     }
 
     private fun arrayElements(array: Any): Sequence<Any?> {
         val length = ReflectArray.getLength(array)
-        return sequence {
-            for (index in 0 until length) {
-                yield(ReflectArray.get(array, index))
-            }
+        if (length == 0) {
+            return emptySequence()
         }
+        val elements = ArrayList<Any?>(length)
+        for (index in 0 until length) {
+            elements.add(ReflectArray.get(array, index))
+        }
+        return elements.asSequence()
     }
 
     private fun convertToString(value: Any?): String? {
@@ -795,16 +798,14 @@ object IdeaVimFacade {
         if (!isAvailable()) {
             return
         }
-        val keys = sequence {
+        val keys = buildList {
             if (includeCtrlR) {
-                yield('\u0012')
+                add('\u0012')
             }
-            yield('=')
-            for (ch in expression) {
-                yield(ch)
-            }
-            yield('\r')
-        }
+            add('=')
+            expression.forEach { add(it) }
+            add('\r')
+        }.asSequence()
         dispatchKeys(editor, keys, "Failed to replay IdeaVim expression input.")
     }
 

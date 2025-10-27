@@ -5,6 +5,7 @@
 ## 0.0.5
 
 - feat: Added expression floating window, triggered in insert mode by pressing `Ctrl-R =`
+- fix: Deprecated method RangeHighlighter.getTextAttributes() is invoked in CmdlineOverlayManagerKt.applyRangeHighlighterAttributes(...)
 
 ## 0.0.4
 
