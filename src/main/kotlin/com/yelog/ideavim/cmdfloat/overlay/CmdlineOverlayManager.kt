@@ -490,8 +490,7 @@ private fun applyRangeHighlighterAttributes(
     scheme: EditorColorsScheme,
     target: TextAttributes,
 ) {
-    val attrs = highlighter.getTextAttributes(scheme)
-        ?: (highlighter as? RangeHighlighterEx)?.forcedTextAttributes
+    val attrs = (highlighter as? RangeHighlighterEx)?.forcedTextAttributes
         ?: highlighter.textAttributesKey?.let { scheme.getAttributes(it) }
         ?: return
     applyAttributes(target, attrs)
