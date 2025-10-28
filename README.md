@@ -66,8 +66,12 @@ To remap the search or command triggers themselves, bind IdeaVim actions to your
 
 ```vim
 nmap r <Action>(cmdfloat.search)
+vmap r <Action>(cmdfloat.search)
 nmap R <Action>(cmdfloat.search_backward)
-nmap : <Action>(cmdfloat.command)
+vmap R <Action>(cmdfloat.search_backward)
+
+nmap ; <Action>(cmdfloat.command)
+vmap ; <Action>(cmdfloat.command)
 ```
 
 These mappings let `r` start a forward search, `R` start a backward search, and keep `:` for command mode. You can use the same actions inside `vmap`, `imap`, or multi-key sequences (for example `<Leader>/`) just as you would with other IdeaVim actions. IdeaVim 2.5.0 or newer is required for the `<Action>(...)` syntax.
