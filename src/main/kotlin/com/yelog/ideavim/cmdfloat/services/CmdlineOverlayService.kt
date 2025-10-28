@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project
 import com.yelog.ideavim.cmdfloat.overlay.CmdlineOverlayKeyDispatcher
 import com.yelog.ideavim.cmdfloat.overlay.CmdlineOverlayManager
 import com.yelog.ideavim.cmdfloat.overlay.IdeaVimFacade
+import com.yelog.ideavim.cmdfloat.overlay.OverlayMode
 import java.awt.KeyboardFocusManager
 import java.lang.reflect.Modifier
 import java.util.concurrent.atomic.AtomicBoolean
@@ -41,6 +42,24 @@ class CmdlineOverlayService(private val project: Project) : Disposable {
             KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(dispatcher)
             logger.info("IdeaVim command overlay dispatcher registered.")
         })
+    }
+
+    fun triggerOverlay(mode: OverlayMode): Boolean {
+        if (project.isDisposed) {
+            return false
+        }
+        if (!IdeaVimFacade.isAvailable()) {
+            return false
+        }
+        if (IdeaVimFacade.isOverlaySuppressed()) {
+            return false
+        }
+
+        val editor = manager.currentEditor() ?: return false
+        if (!IdeaVimFacade.isOverlayAllowed(editor, mode)) {
+            return false
+        }
+        return manager.handleTrigger(mode)
     }
 
     override fun dispose() {

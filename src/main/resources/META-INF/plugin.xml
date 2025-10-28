@@ -27,6 +27,21 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
                 implementation="com.yelog.ideavim.cmdfloat.startup.CmdlineOverlayStartupActivity"/>
     </extensions>
 
+    <actions>
+        <action id="cmdfloat.command"
+                class="com.yelog.ideavim.cmdfloat.actions.CmdfloatCommandOverlayAction"
+                text="CmdFloat Command Overlay"
+                description="Show the CmdFloat command overlay"/>
+        <action id="cmdfloat.search"
+                class="com.yelog.ideavim.cmdfloat.actions.CmdfloatSearchOverlayAction"
+                text="CmdFloat Search Overlay"
+                description="Show the CmdFloat forward-search overlay"/>
+        <action id="cmdfloat.search_backward"
+                class="com.yelog.ideavim.cmdfloat.actions.CmdfloatSearchBackwardOverlayAction"
+                text="CmdFloat Backward Search Overlay"
+                description="Show the CmdFloat backward-search overlay"/>
+    </actions>
+
     <change-notes><![CDATA[
         <h2>0.0.6</h2>
         <ul>

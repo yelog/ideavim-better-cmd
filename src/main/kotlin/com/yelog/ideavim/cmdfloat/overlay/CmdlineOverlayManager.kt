@@ -258,7 +258,7 @@ class CmdlineOverlayManager(private val project: Project) {
         return false
     }
 
-    private fun currentEditor(): Editor? {
+    fun currentEditor(): Editor? {
         val editor = FileEditorManager.getInstance(project).selectedTextEditor ?: return null
         val editorEx = editor as? EditorEx ?: return null
         if (editorEx.isDisposed || editorEx.isViewer || editorEx.editorKind != EditorKind.MAIN_EDITOR) {

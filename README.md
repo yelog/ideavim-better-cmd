@@ -62,6 +62,16 @@ let g:cmdfloat_completion_next_keys = ['Down', '<C-n>', '<Tab>']
 
 Both lists accept Vim-style tokens such as `<C-n>` or simple descriptors like `ctrl+n`. When the variables are omitted, `Up`/`Down` remain the active bindings.
 
+To remap the search or command triggers themselves, bind IdeaVim actions to your preferred keys. The plugin exposes three actions:
+
+```vim
+nmap r <Action>(cmdfloat.search)
+nmap R <Action>(cmdfloat.search_backward)
+nmap : <Action>(cmdfloat.command)
+```
+
+These mappings let `r` start a forward search, `R` start a backward search, and keep `:` for command mode. You can use the same actions inside `vmap`, `imap`, or multi-key sequences (for example `<Leader>/`) just as you would with other IdeaVim actions. IdeaVim 2.5.0 or newer is required for the `<Action>(...)` syntax.
+
 ### Highlight Rendering
 
 Completion rows reuse the editor highlight palette to emphasize matches. This runs by default; set a global flag in `.ideavimrc` to disable the extra highlighting when you need a cheaper rendering path:
