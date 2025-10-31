@@ -125,7 +125,7 @@ class CmdlineOverlayKeyDispatcher(
     private fun KeyEvent.isExpressionTrigger(): Boolean {
         return when (id) {
             KeyEvent.KEY_TYPED -> keyChar == '='
-            KeyEvent.KEY_PRESSED -> keyCode == KeyEvent.VK_EQUALS
+            KeyEvent.KEY_PRESSED -> keyCode == KeyEvent.VK_EQUALS && !isShiftDown
             else -> false
         }
     }
